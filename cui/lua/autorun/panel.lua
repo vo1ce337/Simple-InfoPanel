@@ -119,11 +119,18 @@ local function CreateIcon(parent, matOrPath, size, col)
     return icon
 end
 
+---@param row table example: {text = "123", font = "DermaDefaultBold"}
+function PANEL:AddRow(row)
+    local rows = self.rows
+    simple_insert(rows, row)
+    self:SetInfo(rows, false)
+end
+
 -- rows = {
 --   { "text", { mat="path", size=16 }, { gap=8 }, { text="hi", color=Color(...) } },
 --   { ... } -- second
 -- }
-function PANEL:SetInfo(rows)
+function PANEL:SetInfo(rows, clear)
     if not istable(rows) then
         error("InfoPanel:SetInfo expects a table of rows", 2)
         return
@@ -188,14 +195,6 @@ function PANEL:SetInfo(rows)
     end
 
     self:InvalidateLayout()
-
-    for i, row in pairs(self.rows or {}) do
-        for _, child in ipairs(row:GetChildren()) do
-            if child.autoLayout then
-                child:SetSize(self:GetWide(), row:GetTall())
-            end
-        end
-    end
 end
 
 function PANEL:SizeToContentsX() self.sizeX = true self:InvalidateLayout() end
@@ -278,5 +277,6 @@ function PANEL:Paint(w, h)
     if not col then return end
     draw.RoundedBox(self:GetRounded() or 0, 0, 0, w, h, col)
 end
+
 
 vgui.Register("InfoPanel", PANEL, "EditablePanel")
