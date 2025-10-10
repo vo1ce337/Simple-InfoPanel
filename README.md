@@ -96,3 +96,25 @@ panel:SizeToContents()
 - 🚀 **Mix & Match**: Combine different element types in the same row!
 - 🎨 **Color Everything**: Most elements support color customization
 - 🔧 **Callbacks Rule**: Use `on_added` to configure embedded panels
+
+## 🖼️ Showcase
+
+### 🎯 Center-Aligned Layouts
+**Perfect for dashboards and main menus**
+
+<img width="252" height="165" alt="image" src="https://github.com/user-attachments/assets/337689b0-17e1-4f44-9d84-7fecc44d69c4" />
+
+### 🎨 Left-Aligned Layouts  
+**Great for settings and lists**
+
+<img width="252" height="165" alt="image" src="https://github.com/user-attachments/assets/0543624d-c9ec-452c-a607-65e8aeffa42d" />
+
+### 🔥 Right-Aligned Layouts
+**Ideal for status bars and HUD elements**
+
+<img width="252" height="165" alt="image" src="https://github.com/user-attachments/assets/f757c831-a645-4da6-8140-055c2f3b2217" />
+
+### 🎛️ Showcase of Layout
+**How game sees panel**
+
+<img width="728" height="175" alt="image" src="https://github.com/user-attachments/assets/0d81a722-ffb5-428e-9254-29f1853f31e9" />
