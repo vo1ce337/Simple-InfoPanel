@@ -124,8 +124,3 @@ panel:SizeToContents()
 **Ideal for status bars and HUD elements**
 
 <img width="252" height="165" alt="image" src="https://github.com/user-attachments/assets/f757c831-a645-4da6-8140-055c2f3b2217" />
-
-### 🎛️ Showcase of Layout
-**How game sees panel**
-
-<img width="728" height="175" alt="image" src="https://github.com/user-attachments/assets/0d81a722-ffb5-428e-9254-29f1853f31e9" />
