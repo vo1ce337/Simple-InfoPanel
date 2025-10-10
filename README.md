@@ -44,8 +44,19 @@ panel:SizeToContents()
 - `vertical` - Top/bottom cozy space
 
 ### 🎁 `SetInfo(rows)`
-**The main event!** Fill me with goodies!  
+**The main event!** Fill me with goodies!
 `rows` - An array of rows, each row is a treasure chest of elements
+
+### 🚦 `AddRow(row)`  
+**Just fill me with row. So this function adds row to the end of list.**  
+`row` - One row table. Not two or more. Alike
+```lua
+{
+    p:AddRow({
+        {text = "Added row", font = "DermaDefaultBold"}
+    })
+}
+```
 
 ## 🎈 Element Types - Pick Your Poison!
 
