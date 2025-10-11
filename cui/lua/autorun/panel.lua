@@ -119,11 +119,90 @@ local function CreateIcon(parent, matOrPath, size, col)
     return icon
 end
 
----@param row table example: {text = "123", font = "DermaDefaultBold"}
-function PANEL:AddRow(row)
-    local rows = self.rows
-    simple_insert(rows, row)
-    self:SetInfo(rows, false)
+function PANEL:CreateRow(rowDef, id)
+    if not istable(rowDef) then
+        error("clib.panel:CreateRow expects a rowDef (table)", 2)
+        return
+    end
+
+    local row = vgui.Create("DPanel", self)
+    row:SetMouseInputEnabled(true)
+    row.Paint = function() end
+    row.items = {}
+    row.id = id
+
+    for _, item in pairs(rowDef) do
+        if isstring(item) then
+            local lbl = CreateLabel(row, item, self:GetFont(), color_white)
+            simple_insert(row.items, lbl)
+        elseif isnumber(item) then
+            local sp = vgui.Create("DPanel", row)
+            sp:SetSize(item, 1)
+            sp.Paint = function() end
+            simple_insert(row.items, sp)
+        elseif istable(item) then
+            if item.gap then
+                local sp = vgui.Create("DPanel", row)
+                sp:SetSize(item.gap, 1)
+                sp.Paint = function() end
+                simple_insert(row.items, sp)
+            elseif item.text then
+                local font = item.font or self:GetFont()
+                local col = item.color or color_white
+                local lbl = CreateLabel(row, item.text, font, col)
+                if isfunction(item.on_added) then item.on_added(lbl) end
+                simple_insert(row.items, lbl)
+            elseif item.mat then
+                local size = item.size or 16
+                local col = item.color or color_white
+                local icon = CreateIcon(row, item.mat, size, col)
+                if isfunction(item.on_added) then item.on_added(icon) end
+                simple_insert(row.items, icon)
+            elseif item.pnl then
+                local panel = item.pnl
+                panel:SetParent(row)
+                if istable(item.size) then panel:SetSize(item.size[1], item.size[2]) end
+                if isnumber(item.sizeX) then panel:SetWide(item.sizeX) end
+                if isnumber(item.sizeY) then panel:SetTall(item.sizeY) end
+                if isbool(item.mouse_input) then panel:SetMouseInputEnabled(item.mouse_input) end
+                if isfunction(item.on_added) then item.on_added(panel) end
+                simple_insert(row.items, panel)
+            end
+        elseif type(item) == "IMaterial" then
+            local icon = CreateIcon(row, item, 16, color_white)
+            simple_insert(row.items, icon)
+        else
+            local lbl = CreateLabel(row, tostring(item), self:GetFont(), color_white)
+            simple_insert(row.items, lbl)
+        end
+    end
+
+    return row
+end
+
+---@param rowDef table example: {text = "123", font = "DermaDefaultBold"}
+function PANEL:AddRow(rowDef, forcedId)
+    local row = self:CreateRow(rowDef, forcedId)
+    local id = simple_insert(self.rows, row)
+
+    self:InvalidateLayout()
+    return id
+end
+
+function PANEL:RemoveRow(id)
+    if not id then return end
+
+    for i, row in pairs(self.rows) do
+        if row.id == id or i == id then
+            if IsValid(row) then
+                row:Remove()
+            end
+            self.rows[i] = nil
+            break
+        end
+    end
+
+    self:InvalidateLayout()
 end
 
 -- rows = {
@@ -132,66 +211,16 @@ end
 -- }
 function PANEL:SetInfo(rows, clear)
     if not istable(rows) then
-        error("InfoPanel:SetInfo expects a table of rows", 2)
+        error("clib.panel:SetInfo expects a table of rows", 2)
         return
     end
 
-    self:ClearInfo()
+    if clear then self:ClearInfo() end
 
-    for _, rowDef in ipairs(rows) do
+    for id, rowDef in pairs(rows) do
         if not istable(rowDef) then continue end
-
-        local row = vgui.Create("DPanel", self)
-        row:SetMouseInputEnabled(true)
-        row.Paint = function() end
-        row.items = {}
+        local row = self:CreateRow(rowDef, id)
         simple_insert(self.rows, row)
-
-        for _, item in ipairs(rowDef) do
-            if isstring(item) then
-                local lbl = CreateLabel(row, item, self:GetFont(), color_white)
-                simple_insert(row.items, lbl)
-            elseif isnumber(item) then
-                local sp = vgui.Create("DPanel", row)
-                sp:SetSize(item, 1)
-                sp.Paint = function() end
-                simple_insert(row.items, sp)
-            elseif istable(item) then
-                if item.gap then
-                    local sp = vgui.Create("DPanel", row)
-                    sp:SetSize(item.gap, 1)
-                    sp.Paint = function() end
-                    simple_insert(row.items, sp)
-                elseif item.text then
-                    local font = item.font or self:GetFont()
-                    local col = item.color or color_white
-                    local lbl = CreateLabel(row, item.text, font, col)
-                    simple_insert(row.items, lbl)
-                elseif item.mat then
-                    local size = item.size or 16
-                    local col = item.color or color_white
-                    local icon = CreateIcon(row, item.mat, size, col)
-                    simple_insert(row.items, icon)
-                elseif item.pnl then
-                    local panel = item.pnl
-                    panel:SetParent(row)
-                    if istable(item.size) then panel:SetSize(item.size[1], item.size[2]) else panel.forcedDock = FILL end
-                    if isnumber(item.sizeX) then panel:SetTall(item.sizeX) end
-                    if isnumber(item.sizeY) then panel:SetTall(item.sizeY) end
-
-                    if isbool(item.mouse_input) then panel:SetMouseInputEnabled(item.mouse_input) end
-                    if isfunction(item.on_added) then item.on_added(panel) end
-
-                    simple_insert(row.items, panel)
-                end
-            elseif type(item) == "IMaterial" then
-                local icon = CreateIcon(row, item, 16, color_white)
-                simple_insert(row.items, icon)
-            else
-                local lbl = CreateLabel(row, tostring(item), self:GetFont(), color_white)
-                simple_insert(row.items, lbl)
-            end
-        end
     end
 
     self:InvalidateLayout()
@@ -208,11 +237,11 @@ function PANEL:PerformLayout(w, h)
     local totalW, totalH = 0, 0
     local rowWidths, rowHeights = {}, {}
 
-    for i, row in ipairs(rows) do
+    for i, row in next, rows do
         if not IsValid(row) then continue end
 
         local rw, rh = 0, 0
-        for _, child in ipairs(row:GetChildren()) do
+        for _, child in pairs(row:GetChildren()) do
             if child.GetText and child.SizeToContents then pcall(child.SizeToContents, child) end
             rw = rw + child:GetWide()
             rh = math.max(rh, child:GetTall())
@@ -236,21 +265,21 @@ function PANEL:PerformLayout(w, h)
     if self.sizeX then self:SetWide(totalW) end
     if self.sizeY then self:SetTall(totalH) end
 
-    for _, row in ipairs(rows) do
+    for _, row in next, rows do
         if IsValid(row) then
             row:Dock(NODOCK)
             row:DockMargin(0, 0, 0, 0)
         end
     end
 
-    for i, row in ipairs(rows) do
+    for i, row in next, rows do
         if not IsValid(row) then continue end
         row:SetTall(rowHeights[i])
         row:Dock(TOP)
         row:DockMargin(0, 0, 0, (i < #rows) and self.offsetY or 0)
 
         local rowW = rowWidths[i]
-        for _, child in ipairs(row:GetChildren()) do
+        for _, child in pairs(row:GetChildren()) do
             child:Dock(NODOCK)
         end
 
@@ -262,7 +291,7 @@ function PANEL:PerformLayout(w, h)
             row:DockPadding(0, 0, 0, 0)
         end
 
-        for _, child in ipairs(row:GetChildren()) do
+        for _, child in pairs(row:GetChildren()) do
             child:Dock(child.forcedDock or LEFT)
             child:DockMargin(0, (rowHeights[i] - child:GetTall()) / 2, 0, (rowHeights[i] - child:GetTall()) / 2)
         end
@@ -277,6 +306,5 @@ function PANEL:Paint(w, h)
     if not col then return end
     draw.RoundedBox(self:GetRounded() or 0, 0, 0, w, h, col)
 end
-
 
 vgui.Register("InfoPanel", PANEL, "EditablePanel")
