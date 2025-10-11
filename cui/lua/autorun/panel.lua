@@ -137,35 +137,50 @@ function PANEL:CreateRow(rowDef, id)
             simple_insert(row.items, lbl)
         elseif isnumber(item) then
             local sp = vgui.Create("DPanel", row)
+
             sp:SetSize(item, 1)
             sp.Paint = function() end
+
             simple_insert(row.items, sp)
         elseif istable(item) then
             if item.gap then
                 local sp = vgui.Create("DPanel", row)
+
                 sp:SetSize(item.gap, 1)
                 sp.Paint = function() end
+
                 simple_insert(row.items, sp)
             elseif item.text then
                 local font = item.font or self:GetFont()
                 local col = item.color or color_white
                 local lbl = CreateLabel(row, item.text, font, col)
+
                 if isfunction(item.on_added) then item.on_added(lbl) end
+                if item.dock then lbl.forcedDock = item.dock end
+
                 simple_insert(row.items, lbl)
             elseif item.mat then
                 local size = item.size or 16
                 local col = item.color or color_white
                 local icon = CreateIcon(row, item.mat, size, col)
+
                 if isfunction(item.on_added) then item.on_added(icon) end
+                if item.dock then icon.forcedDock = item.dock end
+
                 simple_insert(row.items, icon)
             elseif item.pnl then
                 local panel = item.pnl
                 panel:SetParent(row)
                 if istable(item.size) then panel:SetSize(item.size[1], item.size[2]) end
+
                 if isnumber(item.sizeX) then panel:SetWide(item.sizeX) end
                 if isnumber(item.sizeY) then panel:SetTall(item.sizeY) end
+
                 if isbool(item.mouse_input) then panel:SetMouseInputEnabled(item.mouse_input) end
                 if isfunction(item.on_added) then item.on_added(panel) end
+
+                if item.dock then panel.forcedDock = item.dock end
+
                 simple_insert(row.items, panel)
             end
         elseif type(item) == "IMaterial" then
@@ -292,8 +307,16 @@ function PANEL:PerformLayout(w, h)
         end
 
         for _, child in pairs(row:GetChildren()) do
-            child:Dock(child.forcedDock or LEFT)
-            child:DockMargin(0, (rowHeights[i] - child:GetTall()) / 2, 0, (rowHeights[i] - child:GetTall()) / 2)
+            local dock = child.forcedDock or LEFT
+
+            if dock == CENTER then
+                local cx = (row:GetWide() - child:GetWide()) / 2
+                local cy = (rowHeights[i] - child:GetTall()) / 2
+                child:SetPos(cx, cy)
+            else
+                child:Dock(dock)
+                child:DockMargin(0, (rowHeights[i] - child:GetTall()) / 2, 0, (rowHeights[i] - child:GetTall()) / 2)
+            end
         end
     end
 end
@@ -308,3 +331,4 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("InfoPanel", PANEL, "EditablePanel")
+
