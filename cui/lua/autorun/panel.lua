@@ -53,6 +53,8 @@ ALIGN_PANEL_RIGHT  = 2
 ALIGN_PANEL_TOP    = 3
 ALIGN_PANEL_BOTTOM = 4
 
+CENTER = 10
+
 AccessorFunc(PANEL, "m_iRounded", "Rounded", FORCE_NUMBER)
 AccessorFunc(PANEL, "m_colColor", "Color")
 AccessorFunc(PANEL, "m_strFont", "Font")
@@ -331,4 +333,5 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("InfoPanel", PANEL, "EditablePanel")
+
 
