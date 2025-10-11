@@ -70,7 +70,8 @@ panel:SizeToContents()
 {
     text = "I'm fancy!",
     font = "DermaDefaultBold",  -- Optional (default: DermaDefault)
-    color = Color(255, 0, 0)    -- Optional (default: 255, 255, 255)
+    color = Color(255, 0, 0),   -- Optional (default: 255, 255, 255)
+    dock = RIGHT                -- Optional (default: LEFT, uses https://wiki.facepunch.com/gmod/Enums/DOCK and CENTER)
 }
 ```
 
@@ -78,8 +79,9 @@ panel:SizeToContents()
 ```lua
 {
     mat = Material("path/to/image.png"),  -- or just "path/to/image.png"
-    size = 16,                           -- Make it big or small!
-    color = Color(255, 255, 255, 128)    -- Optional tint
+    size = 16,                            -- Make it big or small!
+    color = Color(255, 255, 255, 128),    -- Optional tint
+    dock = CENTER                         -- Optional (default: LEFT, uses https://wiki.facepunch.com/gmod/Enums/DOCK and CENTER)
 }
 ```
 
@@ -96,6 +98,7 @@ panel:SizeToContents()
     sizeX = 100,                   -- Width (Optional)
     sizeY = 100,                   -- Height (Optional)
     size = {100, 25},              -- Width & height (Optional. If there isn't will auto-size)
+    dock = CENTER                  -- Optional (default: LEFT, uses https://wiki.facepunch.com/gmod/Enums/DOCK and CENTER)
     on_added = function(panel)     -- Callback (Optional)
         panel:SetText("Click me! 🎯")
     end
