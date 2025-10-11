@@ -98,7 +98,7 @@ panel:SizeToContents()
     sizeX = 100,                   -- Width (Optional)
     sizeY = 100,                   -- Height (Optional)
     size = {100, 25},              -- Width & height (Optional. If there isn't will auto-size)
-    dock = CENTER                  -- Optional (default: LEFT, uses https://wiki.facepunch.com/gmod/Enums/DOCK and CENTER)
+    dock = CENTER,                 -- Optional (default: LEFT, uses https://wiki.facepunch.com/gmod/Enums/DOCK and CENTER)
     on_added = function(panel)     -- Callback (Optional)
         panel:SetText("Click me! 🎯")
     end
