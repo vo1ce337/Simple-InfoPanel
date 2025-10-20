@@ -123,7 +123,7 @@ end
 
 function PANEL:CreateRow(rowDef, id)
     if not istable(rowDef) then
-        error("clib.panel:CreateRow expects a rowDef (table)", 2)
+        error("InfoPanel:CreateRow expects a rowDef (table)", 2)
         return
     end
 
@@ -228,7 +228,7 @@ end
 -- }
 function PANEL:SetInfo(rows, clear)
     if not istable(rows) then
-        error("clib.panel:SetInfo expects a table of rows", 2)
+        error("InfoPanel:SetInfo expects a table of rows", 2)
         return
     end
 
@@ -333,5 +333,6 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("InfoPanel", PANEL, "EditablePanel")
+
 
 
