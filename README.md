@@ -5,7 +5,7 @@ A magical panel that automatically arranges your UI elements like a well-organiz
 ## 🚀 Quick Start
 
 ```lua
-local panel = vgui.Create("clib.panel")
+local panel = vgui.Create("InfoPanel")
 panel:SetPos(50, 50)
 panel:SetColor(Color(30, 30, 30, 200))
 panel:SetRounded(8)
