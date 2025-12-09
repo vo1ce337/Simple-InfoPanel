@@ -1,4 +1,4 @@
-# 🎨 Smart Panel - Smart Layout Manager
+# 🎨 Garry's Mod Smart Panel - Smart Layout Manager
 
 A magical panel that automatically arranges your UI elements like a well-organized bookshelf! ✨
 
